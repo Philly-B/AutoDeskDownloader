@@ -1,3 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using AutoDeskDownloader;
 
-Console.WriteLine("Hello, World!");
+var downloader = new DownloadLinkExtractor();
+
+downloader.DownloadScreenCasts();
