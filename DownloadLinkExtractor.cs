@@ -41,6 +41,7 @@ public class DownloadLinkExtractor
             CloseCookiesOverlay();
             SelectScreenCasts();
             DownloadAllScreenCasts();
+            Console.WriteLine("Done");
         }
         catch (Exception)
         {
