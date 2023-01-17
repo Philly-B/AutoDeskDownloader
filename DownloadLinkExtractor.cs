@@ -18,6 +18,7 @@ public class DownloadLinkExtractor
         var opts = new ChromeOptions();
         opts.AddArgument("--headless"); // we can only print to pdf in headless mode
         opts.AddArgument("--window-size=1920,1080");
+        opts.AddArgument("--log-level=3");
         var userAgent =
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36";
         opts.AddArgument($"user-agent={userAgent}");
@@ -28,7 +29,7 @@ public class DownloadLinkExtractor
         _waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
     }
 
-    public void DownloadScreenCasts()
+    public void DownloadScreenCasts(int startPage)
     {
         try
         {
@@ -40,6 +41,12 @@ public class DownloadLinkExtractor
             NavigateToDashboard(_driver, _waiter);
             CloseCookiesOverlay();
             SelectScreenCasts();
+            
+            if (startPage != 1)
+            {
+                NavigateToPage(startPage);
+            }
+            
             DownloadAllScreenCasts();
             Console.WriteLine("Done");
         }
@@ -99,11 +106,13 @@ public class DownloadLinkExtractor
         var pagination = _driver.FindElement(By.ClassName("react-pagination__menu"));
         if (pagination == null)
         {
+            Console.WriteLine("No pagination, therefore just one page to handle");
             // probably just one site
             return false;
         }
 
         var pages = pagination.FindElements(By.TagName("li")).ToArray();
+        var notLastPage = false;
 
         for (int i = 0; i < pages.Length - 1; i++)
         {
@@ -111,6 +120,7 @@ public class DownloadLinkExtractor
             {
                 pages[i + 1].Click();
                 _waiter.Until(d => WaitForElement(d, By.ClassName("teaser__list")));
+                notLastPage = true;
                 break;
             }
         }
@@ -123,7 +133,20 @@ public class DownloadLinkExtractor
         _driver.ExecuteJavaScript("window.scroll(0, 0);");
         Thread.Sleep(200);
 
-        return false;
+        return notLastPage;
+    }
+    
+    private void NavigateToPage(int pageNumber)
+    {
+        _driver.ExecuteJavaScript("window.scrollBy(0,document.body.scrollHeight)");
+        
+        while (int.Parse(GetCurrentPage()) < pageNumber)
+        {
+            NavigateToNextPage();
+        }
+ 
+        _driver.ExecuteJavaScript("window.scroll(0, 0);");
+        Thread.Sleep(200);
     }
 
     private string GetCurrentPage()
