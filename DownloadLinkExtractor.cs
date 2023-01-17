@@ -41,12 +41,12 @@ public class DownloadLinkExtractor
             NavigateToDashboard(_driver, _waiter);
             CloseCookiesOverlay();
             SelectScreenCasts();
-            
+
             if (startPage != 1)
             {
                 NavigateToPage(startPage);
             }
-            
+
             DownloadAllScreenCasts();
             Console.WriteLine("Done");
         }
@@ -54,7 +54,7 @@ public class DownloadLinkExtractor
         {
             var screenshot = _driver.TakeScreenshot();
             screenshot.SaveAsFile(Path.Combine(KnownFolders.GetPath(KnownFolder.Downloads), "Error.jpg"));
-            
+
             var screenshot2 = _driverHeadless.TakeScreenshot();
             screenshot2.SaveAsFile(Path.Combine(KnownFolders.GetPath(KnownFolder.Downloads), "Error_Headless.jpg"));
             throw;
@@ -128,28 +128,34 @@ public class DownloadLinkExtractor
         do
         {
             Thread.Sleep(200);
-        } while (lastPageFirst == GetTextOfFirst());
+        } while (notLastPage && lastPageFirst == GetTextOfFirst());
 
         _driver.ExecuteJavaScript("window.scroll(0, 0);");
         Thread.Sleep(200);
 
         return notLastPage;
     }
-    
+
     private void NavigateToPage(int pageNumber)
     {
         _driver.ExecuteJavaScript("window.scrollBy(0,document.body.scrollHeight)");
-        
-        while (int.Parse(GetCurrentPage()) < pageNumber)
+
+        while (int.Parse(GetCurrentPage() ?? int.MaxValue.ToString()) < pageNumber)
         {
-            NavigateToNextPage();
+            Console.WriteLine($"Fast forward to page {pageNumber} current page {GetCurrentPage()}");
+            if (!NavigateToNextPage())
+                throw new ArgumentException($"Not possible to find page {pageNumber}");
         }
- 
+
+        Console.WriteLine($"Fast forward to page {pageNumber} complete; current page {GetCurrentPage()}");
+        if (int.Parse(GetCurrentPage() ?? int.MaxValue.ToString()) != pageNumber)
+            throw new ArgumentException($"Not possible to find page {pageNumber}");
+
         _driver.ExecuteJavaScript("window.scroll(0, 0);");
         Thread.Sleep(200);
     }
 
-    private string GetCurrentPage()
+    private string? GetCurrentPage()
     {
         var pagination = _driver.FindElement(By.ClassName("react-pagination__menu"));
         if (pagination == null)
@@ -159,7 +165,7 @@ public class DownloadLinkExtractor
 
         var pages = pagination.FindElements(By.TagName("li")).ToArray();
 
-        for (int i = 0; i < pages.Length - 1; i++)
+        for (var i = 0; i < pages.Length; i++)
         {
             if (pages[i].GetAttribute("class").Contains("--active"))
             {
@@ -167,7 +173,7 @@ public class DownloadLinkExtractor
             }
         }
 
-        return "Page number not found";
+        return null;
     }
 
     private void SelectScreenCasts()
