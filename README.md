@@ -10,8 +10,9 @@ This tool was written fast and only to allow this special use case and not any g
 
 ## How to use this tool
 You need to:
+- if you do not have chrome, you need to download it as well
 - download a version of this tool in the release folder in this repository.
-- provide a chrome driver for your system (https://chromedriver.chromium.org/downloads) which should be next to the exe of this application.
+- provide a chrome driver for your system (https://chromedriver.chromium.org/downloads) which should be next to the exe of this application (**the version has to be the same as your chrome installation**).
 - provide your login information, it should be in a simple text file on your Desktop named "AutodeskLogin.txt" and should contain 2 lines; the first line should be your login email, the second one your password.
 
 ## Process
@@ -34,3 +35,5 @@ You will have all your screencasts (of all pages) as MP4 in your Downloads folde
 
 ## Known issues
 You might see log entries like '[24204:3772:0117/092357.726:ERROR:device_event_log_impl.cc(215)] [09:23:57.726] USB: usb_device_handle_win' . I did not figure out how to omit them, you can ignore those.
+
+You might see a log entry like 'Current browser version is 108.xxxx'. Make sure that you download the correct version of the chrome driver (same as the chrome you have currently installed).
