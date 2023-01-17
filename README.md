@@ -18,7 +18,7 @@ You need to:
 ## Process
 1) Open a powershell in the folder you placed this applications executable.
 2) Run the executable (e.g. '.\AutoDeskDownloader_0.0.1.exe')
-3) A new chrome window will open and you can see what this tool is doing (Do not close this window as the tool wont work, however, you can minimize it)
+3) A new chrome window will open and you can see what this tool is doing (Do not close this window as the tool wont work, however, you can minimize it **but not resize**)
 4) Additionally you can see in the powershell what this tool is printing out and what it is currently doing
 5) In case you see any errors or exceptions you can add issues here (but I might not answer to them)
 6) The chrome window will be closed automatically after finishing
