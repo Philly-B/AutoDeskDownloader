@@ -5,7 +5,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace AutoDeskDownloader;
 
-public class DownloadLinkExtractor
+public class DownloadScreenCasts
 {
     private readonly LoginDataProvider _loginDataProvider = new LoginDataProvider();
     private readonly ChromeDriver _driver;
@@ -13,7 +13,7 @@ public class DownloadLinkExtractor
     private readonly WebDriverWait _waiter;
     private readonly WebDriverWait _waiterHeadless;
 
-    public DownloadLinkExtractor()
+    public DownloadScreenCasts()
     {
         var opts = new ChromeOptions();
         opts.AddArgument("--headless"); // we can only print to pdf in headless mode
@@ -27,9 +27,11 @@ public class DownloadLinkExtractor
 
         _driver = new ChromeDriver();
         _waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
+        
+        _driver.Manage().Window.Maximize();
     }
 
-    public void DownloadScreenCasts(int startPage)
+    public void StartDownload(int startPage)
     {
         try
         {
@@ -201,7 +203,7 @@ public class DownloadLinkExtractor
             Orientation = PrintOrientation.Landscape
         };
         var doc = _driverHeadless.Print(printOptions);
-        var fileName = Path.Combine(KnownFolders.GetPath(KnownFolder.Downloads), $"{name}.pdf");
+        var fileName = Path.Combine(KnownFolders.GetPath(KnownFolder.Downloads), $"{MakeSafeFileName(name)}.pdf");
         if (File.Exists(fileName))
         {
             fileName = $"{name}_{Guid.NewGuid().ToString().Substring(0, 5)}.pdf";
@@ -209,6 +211,17 @@ public class DownloadLinkExtractor
 
         Console.WriteLine($"Storing detail page of {name} as {fileName}");
         doc.SaveAsFile(fileName);
+    }
+
+    private string MakeSafeFileName(string name)
+    {
+        var fileName = name;
+        foreach (var c in Path.GetInvalidFileNameChars()) 
+        { 
+            fileName = fileName.Replace(c, '-'); 
+        }
+
+        return fileName;
     }
 
     private (string name, string url) HandleOneElement(IWebElement element)

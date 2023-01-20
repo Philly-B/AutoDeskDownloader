@@ -17,8 +17,8 @@ internal class Program
         }
         
         
-        var downloader = new DownloadLinkExtractor();
+        var downloader = new DownloadScreenCasts();
 
-        downloader.DownloadScreenCasts(startPage);
+        downloader.StartDownload(startPage);
     }
 }
