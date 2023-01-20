@@ -3,7 +3,7 @@
 ## Purpose of this tool
 This tool allows to download all Autodesk screen casts you own and a pdf of the screen casts detail page so that you do not loose any additional information you stored there.
 
-Donations are welcome via PayPal philipp.butz92@googlemail.com
+In case this tool worked out for you and saved some time manually downloading everything, please consider a donation via PayPal philipp.butz92@googlemail.com
 
 ## Disclaimer:
 This tool was written fast and only to allow this special use case and not any generic. The page of Autodesk is sadly not written in a way which makes it easy to download files/information. Therefore the only way I figured out to work was using Selenium and actually simulate clicks in the browser. If you have any issues with this tool for your usecase, you might want to fork this repository, I will probably not put additional work into this.
@@ -37,3 +37,5 @@ You will have all your screencasts (of all pages) as MP4 in your Downloads folde
 You might see log entries like '[24204:3772:0117/092357.726:ERROR:device_event_log_impl.cc(215)] [09:23:57.726] USB: usb_device_handle_win' . I did not figure out how to omit them, you can ignore those.
 
 You might see a log entry like 'Current browser version is 108.xxxx'. Make sure that you download the correct version of the chrome driver (same as the chrome you have currently installed).
+
+It might be the case that the window chrome does not maximize, please maximize it yourself as soon as the browser opens.
